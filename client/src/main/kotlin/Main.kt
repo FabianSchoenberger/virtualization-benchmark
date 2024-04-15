@@ -11,22 +11,24 @@ data class Benchmark(
 
 val benchmark = Benchmark(1, 10, 500, 0..100)
 
-fun main() {
-    val times = run(benchmark)
+fun main(args: Array<String>) {
+    val url = args[0]
+
+    val times = run(benchmark, url)
     val totalTime = times.sum()
     val averageTime = times.average()
     println("total: $totalTime ms")
     println("average: $averageTime ms")
 }
 
-fun run(benchmark: Benchmark): List<Long> {
+fun run(benchmark: Benchmark, url: String): List<Long> {
     val client = JavaHttpClient()
 
     println("--- benchmark ${benchmark.id} ---")
 
     println("warming up (${benchmark.warmups})")
     for (i in 1..benchmark.warmups) {
-        val request = request(benchmark.range.random())
+        val request = request(url, benchmark.range.random())
         client(request)
     }
 
@@ -43,7 +45,7 @@ fun run(benchmark: Benchmark): List<Long> {
 
         val start = System.currentTimeMillis()
 
-        val request = request(benchmark.range.random())
+        val request = request(url, benchmark.range.random())
         client(request)
 
         val end = System.currentTimeMillis()
@@ -55,5 +57,5 @@ fun run(benchmark: Benchmark): List<Long> {
     return times
 }
 
-fun request(number: Int) = Request(Method.GET, "http://localhost:8080")
+fun request(url: String, number: Int) = Request(Method.GET, url)
     .query("number", number.toString())

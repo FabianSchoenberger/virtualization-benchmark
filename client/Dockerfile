@@ -1,12 +1,14 @@
-FROM gradle:jdk21 AS build
-VOLUME /home/gradle/.gradle
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
-COPY build.gradle.kts .
-RUN gradle dependencies
-COPY . .
-RUN gradle distTar
+COPY gradle/ gradle/
+COPY gradlew ./
+COPY build.gradle.kts ./
+RUN ./gradlew dependencies
+COPY ./ ./
+RUN ./gradlew distTar
 
-FROM eclipse-temurin:21
-COPY --from=build /app/build/distributions/client-1.0.0.tar client.tar
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/build/distributions/client-*.tar client.tar
 RUN tar -xf client.tar
-ENTRYPOINT client-1.0.0/bin/client
+ENTRYPOINT client-*/bin/client "http://server:8080"
