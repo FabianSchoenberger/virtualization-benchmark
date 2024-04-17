@@ -1,6 +1,7 @@
 import org.http4k.client.JavaHttpClient
 import org.http4k.core.Method
 import org.http4k.core.Request
+import java.io.File
 
 data class Benchmark(
     val id: Int,
@@ -9,16 +10,30 @@ data class Benchmark(
     val range: IntRange
 )
 
-val benchmark = Benchmark(1, 10, 500, 0..100)
+val benchmarks = arrayOf(
+    Benchmark(1, 5, 50, 0..10),
+    Benchmark(2, 5, 500, 0..100),
+    Benchmark(3, 5, 5000, 0..1000),
+)
 
 fun main(args: Array<String>) {
-    val url = args[0]
+    val name = args[0]
+    val url = args[1]
 
-    val times = run(benchmark, url)
-    val totalTime = times.sum()
-    val averageTime = times.average()
-    println("total: $totalTime ms")
-    println("average: $averageTime ms")
+    val output = File("results-${name}.csv").writer()
+    output.write("id;warmups;iterations;rangeFirst;rangeLast;totalTime;averageTime")
+    for(benchmark in benchmarks) {
+        val times = run(benchmark, url)
+        val totalTime = times.sum()
+        val averageTime = times.average()
+
+        println("total: $totalTime ms")
+        println("average: $averageTime ms")
+        println()
+
+        output.write("\n${benchmark.id};${benchmark.warmups};${benchmark.iterations};${benchmark.range.first};${benchmark.range.last};$totalTime;$averageTime")
+    }
+    output.flush()
 }
 
 fun run(benchmark: Benchmark, url: String): List<Long> {
