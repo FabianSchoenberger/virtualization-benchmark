@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
     val name = args[0]
     val url = args[1]
 
-    val output = File("results-${name}.csv").writer()
+    val output = File("out/results-${name}.csv").writer()
     output.write("id;warmups;iterations;rangeFirst;rangeLast;totalTime;averageTime")
     for(benchmark in benchmarks) {
         val times = run(benchmark, url)
