@@ -3,6 +3,8 @@ services:
   client:
     image: benchmark-client:1.0.0
     build: ./client/
+    volumes:
+      - ./out:/app/out
     depends_on:
       server:
         condition: service_healthy

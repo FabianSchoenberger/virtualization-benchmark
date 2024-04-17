@@ -11,4 +11,4 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/build/distributions/client-*.tar client.tar
 RUN tar -xf client.tar
-ENTRYPOINT client-*/bin/client "http://server:8080"
+ENTRYPOINT client-*/bin/client "docker" "http://server:8080"
