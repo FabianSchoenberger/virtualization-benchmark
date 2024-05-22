@@ -1,0 +1,4 @@
+id;warmups;iterations;rangeFirst;rangeLast;totalTime;averageTime
+1;5;50;0;10;2989;59.78
+2;5;500;0;100;29526;59.052
+3;5;5000;0;1000;288283;57.6566
